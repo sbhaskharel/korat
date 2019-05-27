@@ -29,7 +29,10 @@ public class Trie {
         }
     }
     private Node root;
-    private int size;
+    // note that size also includes the root,
+    //so inserting "hello" would result in size 6
+    private int size; 
+    
     
     public Trie() {
         root = new Node();
