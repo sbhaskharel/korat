@@ -13,30 +13,26 @@ import korat.finitization.impl.FinitizationFactory;
 import korat.finitization.IObjSet;
 
 public class Trie {
-
-    
-    public static class Node {
+	public static class Node {
         Character c;
-        //HashMap<Character, Node> children = new HashMap<Character, Node>();
         Node children[];
         boolean isWord;
      
         public Node() {}
-     
+        /*One can write a getNode(char) function to determine how many entries 
+         * the children field has. Same with the root.
+         */
         public Node(char c){
             this.c = c;
-            children = new Node[26];
         }
     }
-    private Node root;
-    // note that size also includes the root,
-    //so inserting "hello" would result in size 6
-    private int size; 
-    
-    
+    Node root;
+    int size; 
+       
     public Trie() {
         root = new Node();
     }
+    
     @SuppressWarnings("unchecked")
     public boolean repOK() {
         if (root == null)
@@ -48,10 +44,6 @@ public class Trie {
         workList.add(root);
         while (!workList.isEmpty()) {
         	Node current = (Node) workList.removeFirst();
-        	/*iterate through all of the current Node's children  hashmap
-        	for (Map.Entry<Character, Node> entry : current.children.entrySet()) {
-        	    //Character key = entry.getKey();
-        	    Node currentChild = entry.getValue();*/
         	for(Node currentChild : current.children) {
         	    if(currentChild!=null) {
         	    	if(!visited.add(currentChild))
@@ -72,16 +64,14 @@ public class Trie {
             int maxSize) {
         IFinitization f = FinitizationFactory.create(Trie.class);//singleton class instance of Finitization
         IObjSet nodes = f.createObjSet(Node.class, nodesNum, true); // field domain for nodes
-        IObjSet chars= f.createObjSet(Character.class, 26, false); // field domain excluding null for c
-        IIntSet arrayLength = f.createIntSet(0, 1, 26); 
-        IBooleanSet isWord = f.createBooleanSet();
-        IArraySet childrenSet = f.createArraySet(Node.class, arrayLength, nodes, 1/*what goes here?*/); //field domain for children is an array of nodes
+        IObjSet chars= f.createObjSet(Character.class, 3, false); // field domain excluding null for c
+        IIntSet arrayLength = f.createIntSet(0, 1, 3);// array length can range from 0 to 3 (max 3 children)   
+        IArraySet childrenSet = f.createArraySet(Node[].class, arrayLength, nodes, 1/*what goes here?*/);  
         f.set("root", nodes);
         f.set("size", f.createIntSet(minSize, maxSize));
         f.set("Node.c", chars);
-        f.set("Node.right", nodes);
         f.set("Node.children", childrenSet);
-        f.set("isWord", isWord);
+        
         return f;
     }
 }
